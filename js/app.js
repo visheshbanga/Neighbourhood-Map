@@ -61,10 +61,11 @@ function populateInfoWindow(marker, infoWindow){
     makeMarkerBounce(marker);
     if(infoWindow.marker != marker){
         infoWindow.marker = marker;
-        infoWindow.setContent('<div>' + marker.title + '</div><div>' + marker.position + '</div>');
+        infoWindow.setContent('');
+        getPhotos(marker);
         infoWindow.open(map,marker);
         infoWindow.addListener('closeclick', function(){
-            infoWindow.setMarker(null);
+            infoWindow.marker = null;
         });
     }
 }
@@ -95,10 +96,35 @@ function selectMarker(value){
     }
 }
 
+googleapiError = () => {
+    viewModel.showError(true);
+    viewModel.error('Error: Failed to load Map');
+};
+
+function getPhotos(marker){
+    var content = '<div class="infoTitle">' + marker.title + '</div><div class="infoPosition">'+
+    marker.position + '</div><div class="infoWindow">';
+    var lat = marker.getPosition().lat();
+    var lng = marker.getPosition().lng();
+    $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=71f7dbd68c3df981a0dff409b02b237a&lat='+lat+'&lon='+lng+'&per_page=30&media=photos&format=json&jsoncallback=?',displayIm).fail(function() { alert("error"); });
+    function displayIm(data){
+        $.each(data.photos.photo, function(i,item){
+            var id = item.id;
+            var photoURL = 'http://farm' + item.farm + '.static.flickr.com/' + item.server + '/' + item.id + '_' + item.secret + '_m.jpg';
+            content += '<img class="infoImage" src="' + photoURL + '">';
+        });
+        content += '</div>';
+        largeInfoWindow.setContent(content);
+        showListings();
+    }
+}
+
 var viewModel = {
     searchQuery: ko.observable(''),
     list: ko.observableArray([]),
     showMyList: ko.observable(true),
+    showError: ko.observable(false),
+    error: ko.observable(''),
     init: function(query){
         for(var l in locations){
             viewModel.list.push(locations[l]);

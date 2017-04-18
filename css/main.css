@@ -29,6 +29,14 @@ body {
     background-size: 1.3em;
     background-repeat: no-repeat;
     padding: 12px 20px 12px 40px;
+    margin-bottom: 5px;
+}
+#error{
+    padding-left: 40px;
+    background-position: 10px 15px;
+    background-image: url('images/error.png');
+    background-size: 1.6em;
+    background-repeat: no-repeat;
 }
 .btn{
     width: 48%;
@@ -54,22 +62,60 @@ body {
     border-radius: 3px;
     overflow: auto;
 }
+.list-group{
+    cursor: pointer;
+}
+.list-group-item:hover{
+    background-color: #3399ff;
+}
+.infoTitle{
+    text-align: center;
+}
+.infoPosition{
+    text-align: center;
+    padding-bottom: 2px;
+    border-bottom: 1px solid;
+}
+.infoWindow{
+    width: 200px;
+    height: 200px;
+    overflow: auto;
+    white-space: nowrap;
+    margin-top: 2px;
+}
+.infoImage{
+    height: 195px;
+    width: 195px;
+    margin: 2px;
+}
 @media (max-width: 991px){
     .sidebar{
         height: 35%;
         width: 100%;
+        margin-bottom: 20px;
     }
     #map{
         height: 65%;
+        border: 3px solid #999;
     }
     .searchbar{
         font-size: 30px;
         padding-left: 70px;
+    }
+    #error{
+        font-size: 30px;
+        padding-left: 70px;
+        background-size: 1.5em;
+        background-position: 15px 15px;
     }
     .btn{
         font-size: 30px;
     }
     h1{
         font-size: 80px;
+    }
+    .list-group{
+        font-size: 30px;
+        cursor: pointer;
     }
 }
