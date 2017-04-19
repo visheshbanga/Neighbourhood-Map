@@ -40,6 +40,7 @@ function initMap() {
     showListings();
 }
 
+// change color of marker when hovered
 function makeMarkerIcon(markerColor){
     var markerImage = new google.maps.MarkerImage('http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+
         markerColor+'|40|_|%E2%80%A2',
@@ -50,6 +51,7 @@ function makeMarkerIcon(markerColor){
     return markerImage;
 }
 
+// Animate marker when clicked
 function makeMarkerBounce(marker) {
     marker.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(function() {
@@ -57,6 +59,7 @@ function makeMarkerBounce(marker) {
     }, 750);
 }
 
+// This function populates the infowindow when the marker is clicked based on that markers position.
 function populateInfoWindow(marker, infoWindow){
     makeMarkerBounce(marker);
     if(infoWindow.marker != marker){
@@ -70,6 +73,7 @@ function populateInfoWindow(marker, infoWindow){
     }
 }
 
+// show markers
 function showListings(){
     var bounds = new google.maps.LatLngBounds();
     for (var i = 0; i < markers.length; i++){
@@ -79,6 +83,7 @@ function showListings(){
     map.fitBounds(bounds);
 }
 
+// hide markers
 function hideListings(){
     for(var i = 0; i < markers.length; i++){
         markers[i].setMap(null);
@@ -96,17 +101,26 @@ function selectMarker(value){
     }
 }
 
+// google api error
 googleapiError = () => {
     viewModel.showError(true);
-    viewModel.error('Error: Failed to load Map');
+    viewModel.error('Error: Failed to load Map...');
 };
 
+// flickr api error
+function flickrError(){
+    viewModel.showError(true);
+    viewModel.error('Error: Failed to load data...')
+    largeInfoWindow.setContent('Error: failed to load data...')
+}
+
+// load photos from flickr into infoWindow based lat,lng location
 function getPhotos(marker){
     var content = '<div class="infoTitle">' + marker.title + '</div><div class="infoPosition">'+
     marker.position + '</div><div class="infoWindow">';
     var lat = marker.getPosition().lat();
     var lng = marker.getPosition().lng();
-    $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=71f7dbd68c3df981a0dff409b02b237a&lat='+lat+'&lon='+lng+'&per_page=30&media=photos&format=json&jsoncallback=?',displayIm).fail(function() { alert("error"); });
+    $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=71f7dbd68c3df981a0dff409b02b237a&lat='+lat+'&lon='+lng+'&per_page=30&media=photos&format=json&jsoncallback=?',displayIm).fail(flickrError());
     function displayIm(data){
         $.each(data.photos.photo, function(i,item){
             var id = item.id;
@@ -116,9 +130,12 @@ function getPhotos(marker){
         content += '</div>';
         largeInfoWindow.setContent(content);
         showListings();
+        viewModel.showError(false);
+        viewModel.error('');
     }
 }
 
+// view model
 var viewModel = {
     searchQuery: ko.observable(''),
     list: ko.observableArray([]),
@@ -130,6 +147,7 @@ var viewModel = {
             viewModel.list.push(locations[l]);
         }
     },
+    // search queries
     search: function(query) {
         viewModel.list.removeAll();
         for (var i = 0; i < markers.length; i++) {
