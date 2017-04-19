@@ -9,5 +9,5 @@
 * Flickr API
 ## Instructions
 * Clone the app repository to your local machine:
-> git clone https://github.com/visheshbanga/Neighbourhood-Map
+<pre> git clone https://github.com/visheshbanga/Neighbourhood-Map </pre>
 * Open index.html file.
