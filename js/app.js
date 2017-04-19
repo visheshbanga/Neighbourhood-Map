@@ -56,7 +56,7 @@ function makeMarkerBounce(marker) {
     marker.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(function() {
         marker.setAnimation(null);
-    }, 750);
+    }, 700);
 }
 
 // This function populates the infowindow when the marker is clicked based on that markers position.
@@ -120,7 +120,9 @@ function getPhotos(marker){
     marker.position + '</div><div class="infoWindow">';
     var lat = marker.getPosition().lat();
     var lng = marker.getPosition().lng();
-    $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=71f7dbd68c3df981a0dff409b02b237a&lat='+lat+'&lon='+lng+'&per_page=30&media=photos&format=json&jsoncallback=?',displayIm).fail(flickrError());
+    $.getJSON('https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=71f7dbd68c3df981a0dff409b02b237a&lat='+lat+'&lon='+lng+'&per_page=30&media=photos&format=json&jsoncallback=?',displayIm).fail(function(){
+        flickrError();
+    });
     function displayIm(data){
         $.each(data.photos.photo, function(i,item){
             var id = item.id;
@@ -134,6 +136,7 @@ function getPhotos(marker){
         viewModel.error('');
     }
 }
+
 
 // view model
 var viewModel = {
